@@ -2,7 +2,7 @@ import { Payload, Network, ScopeType } from "./types";
 import { isMobile, isLocalhost, randomId } from "./utils";
 import { css } from './style';
 
-const sdkVersion = '1.2.17';
+const sdkVersion = '1.2.18';
 const postMessages = {
     PT_RESPONSE: 'PT_RESPONSE',
     PT_HANDLE_REQUEST: 'PT_HANDLE_REQUEST',
@@ -17,6 +17,7 @@ const postMessages = {
 const portisPayloadMethods = {
     SET_DEFAULT_EMAIL: 'SET_DEFAULT_EMAIL',
     SHOW_PORTIS: 'SHOW_PORTIS',
+    CHANGE_NETWORK: 'CHANGE_NETWORK',
 };
 
 export class PortisProvider {
@@ -123,6 +124,22 @@ export class PortisProvider {
                 }
             })
         });
+    }
+
+    changeNetwork(opts: { network?: Network, infuraApiKey?: string, providerNodeUrl?: string }, callback?: (err, resp) => void) {
+        if (opts.network) {
+            this.referrerAppOptions.network = opts.network;
+        }
+
+        if (opts.infuraApiKey) {
+            this.referrerAppOptions.infuraApiKey = opts.infuraApiKey;
+        }
+
+        if (opts.providerNodeUrl) {
+            this.referrerAppOptions.providerNodeUrl = opts.providerNodeUrl;
+        }
+
+        this.sendGenericPayload(portisPayloadMethods.CHANGE_NETWORK, [opts.network, opts.infuraApiKey, opts.providerNodeUrl], callback);
     }
 
     private sendGenericPayload(method: string, params: any[] = [], callback: (err, resp) => any = _ => _) {

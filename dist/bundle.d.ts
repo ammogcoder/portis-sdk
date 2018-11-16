@@ -45,6 +45,11 @@ export class PortisProvider {
     showPortis(callback: any): void;
     on(eventName: string, callback: any): void;
     enable(): Promise<{}>;
+    changeNetwork(opts: {
+        network?: Network;
+        infuraApiKey?: string;
+        providerNodeUrl?: string;
+    }, callback?: (err, resp) => void): void;
 }
 
 export interface Payload {
