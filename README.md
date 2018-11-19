@@ -259,6 +259,17 @@ web3js = new Web3(new Portis.PortisProvider({
 
 ## Methods
 
+### ```changeNetwork(options)```
+
+Change the network for all future web3 method calls. The network change will only apply once the user finished signing all pending transactions for the previously set network.
+
+The method accepts an object to set the new network to be used. It should contain one of the three values that can be used during the ```PortisProvider``` initialization: ```network | infuraApiKey | providerNodeUrl```
+
+**Example**:
+```js
+web3.currentProvider.changeNetwork({ network: 'kovan' });
+```
+
 ### ```setDefaultEmail(email: string, editable: boolean)```
 
 If you already know the user's email address, you can use this method to pre-populate the email field in the login and register pages.
