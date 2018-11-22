@@ -2,7 +2,7 @@ import { Payload, Network, ScopeType } from "./types";
 import { isMobile, isLocalhost, randomId } from "./utils";
 import { css } from './style';
 
-const sdkVersion = '1.2.18';
+const sdkVersion = '1.3.0';
 const postMessages = {
     PT_RESPONSE: 'PT_RESPONSE',
     PT_HANDLE_REQUEST: 'PT_HANDLE_REQUEST',
