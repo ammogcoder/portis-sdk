@@ -14,6 +14,7 @@ export declare class PortisProvider {
     elements: Promise<{
         wrapper: HTMLDivElement;
         iframe: HTMLIFrameElement;
+        notification: HTMLDivElement;
     }>;
     iframeReady: boolean;
     account: string | null;
@@ -53,6 +54,8 @@ export declare class PortisProvider {
     private createIframe();
     private showIframe();
     private hideIframe();
+    private showNotification(msg);
+    private hideNotification();
     private getDappViewportMetaTag();
     private setPortisViewport();
     private setDappViewport();

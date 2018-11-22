@@ -15,6 +15,7 @@ export class PortisProvider {
     elements: Promise<{
         wrapper: HTMLDivElement;
         iframe: HTMLIFrameElement;
+        notification: HTMLDivElement;
     }>;
     iframeReady: boolean;
     account: string | null;

@@ -11,6 +11,8 @@ var postMessages = {
     PT_USER_LOGGED_IN: 'PT_USER_LOGGED_IN',
     PT_PURCHASE_INITIATED: 'PT_PURCHASE_INITIATED',
     PT_ON_DATA: 'PT_ON_DATA',
+    PT_SHOW_NOTIFICATION: 'PT_SHOW_NOTIFICATION',
+    PT_HIDE_NOTIFICATION: 'PT_HIDE_NOTIFICATION',
 };
 var portisPayloadMethods = {
     SET_DEFAULT_EMAIL: 'SET_DEFAULT_EMAIL',
@@ -134,18 +136,27 @@ var PortisProvider = /** @class */ (function () {
                 var iframe = document.createElement('iframe');
                 var styleElem = document.createElement('style');
                 var viewportMetaTag = document.createElement('meta');
+                var notification = document.createElement('div');
+                var notificationLogo = document.createElement('img');
+                var notificationText = document.createElement('span');
                 wrapper.className = mobile ? 'portis-mobile-wrapper' : 'portis-wrapper';
                 iframe.className = mobile ? 'portis-mobile-iframe' : 'portis-iframe';
+                notification.className = mobile ? 'portis-mobile-notification' : 'portis-notification';
+                notificationLogo.src = 'https://assets.portis.io/portis-logo/logo_64_64.png';
+                notificationLogo.className = 'portis-notifiction-logo';
                 iframe.src = _this.portisClient + "/send/?p=" + btoa(JSON.stringify(_this.referrerAppOptions));
                 styleElem.innerHTML = css;
                 viewportMetaTag.name = 'viewport';
                 viewportMetaTag.content = 'width=device-width, initial-scale=1';
+                notification.appendChild(notificationLogo);
+                notification.appendChild(notificationText);
                 wrapper.appendChild(iframe);
                 document.body.appendChild(wrapper);
+                document.body.appendChild(notification);
                 document.head.appendChild(styleElem);
                 _this.portisViewportMetaTag = viewportMetaTag;
                 _this.dappViewportMetaTag = _this.getDappViewportMetaTag();
-                resolve({ wrapper: wrapper, iframe: iframe });
+                resolve({ wrapper: wrapper, iframe: iframe, notification: notification });
             };
             if (['loaded', 'interactive', 'complete'].indexOf(document.readyState) > -1) {
                 onload();
@@ -172,6 +183,24 @@ var PortisProvider = /** @class */ (function () {
             if (isMobile()) {
                 document.body.style.overflow = 'inherit';
                 _this.setDappViewport();
+            }
+        });
+    };
+    PortisProvider.prototype.showNotification = function (msg) {
+        this.elements.then(function (elements) {
+            var span = elements.notification.querySelector('span');
+            if (span) {
+                span.innerText = msg;
+                elements.notification.style.display = 'flex';
+            }
+        });
+    };
+    PortisProvider.prototype.hideNotification = function () {
+        this.elements.then(function (elements) {
+            var span = elements.notification.querySelector('span');
+            if (span) {
+                span.innerText = '';
+                elements.notification.style.display = 'none';
             }
         });
     };
@@ -252,6 +281,14 @@ var PortisProvider = /** @class */ (function () {
                     }
                     case postMessages.PT_HIDE_IFRAME: {
                         _this.hideIframe();
+                        break;
+                    }
+                    case postMessages.PT_SHOW_NOTIFICATION: {
+                        _this.showNotification(evt.data.response.message);
+                        break;
+                    }
+                    case postMessages.PT_HIDE_NOTIFICATION: {
+                        _this.hideNotification();
                         break;
                     }
                     case postMessages.PT_USER_DENIED: {

@@ -13,6 +13,8 @@ const postMessages = {
     PT_USER_LOGGED_IN: 'PT_USER_LOGGED_IN',
     PT_PURCHASE_INITIATED: 'PT_PURCHASE_INITIATED',
     PT_ON_DATA: 'PT_ON_DATA',
+    PT_SHOW_NOTIFICATION: 'PT_SHOW_NOTIFICATION',
+    PT_HIDE_NOTIFICATION: 'PT_HIDE_NOTIFICATION',
 };
 const portisPayloadMethods = {
     SET_DEFAULT_EMAIL: 'SET_DEFAULT_EMAIL',
@@ -24,7 +26,7 @@ export class PortisProvider {
     portisClient = 'https://app.portis.io';
     requests: { [id: string]: { payload: Payload, cb } } = {};
     queue: { payload: Payload, cb }[] = [];
-    elements: Promise<{ wrapper: HTMLDivElement, iframe: HTMLIFrameElement }>;
+    elements: Promise<{ wrapper: HTMLDivElement, iframe: HTMLIFrameElement, notification: HTMLDivElement }>;
     iframeReady: boolean;
     account: string | null = null;
     network: string | null = null;
@@ -152,7 +154,7 @@ export class PortisProvider {
         this.enqueue(payload, callback);
     }
 
-    private createIframe(): Promise<{ wrapper: HTMLDivElement, iframe: HTMLIFrameElement }> {
+    private createIframe(): Promise<{ wrapper: HTMLDivElement, iframe: HTMLIFrameElement, notification: HTMLDivElement }> {
         return new Promise((resolve, reject) => {
             const onload = () => {
                 const mobile = isMobile();
@@ -160,21 +162,30 @@ export class PortisProvider {
                 const iframe = document.createElement('iframe');
                 const styleElem = document.createElement('style');
                 const viewportMetaTag = document.createElement('meta');
+                const notification = document.createElement('div');
+                const notificationLogo = document.createElement('img');
+                const notificationText = document.createElement('span');
 
                 wrapper.className = mobile ? 'portis-mobile-wrapper' : 'portis-wrapper';
                 iframe.className = mobile ? 'portis-mobile-iframe' : 'portis-iframe';
+                notification.className = mobile ? 'portis-mobile-notification' : 'portis-notification';
+                notificationLogo.src = 'https://assets.portis.io/portis-logo/logo_64_64.png';
+                notificationLogo.className = 'portis-notifiction-logo';
                 iframe.src = `${this.portisClient}/send/?p=${btoa(JSON.stringify(this.referrerAppOptions))}`;
                 styleElem.innerHTML = css;
                 viewportMetaTag.name = 'viewport';
                 viewportMetaTag.content = 'width=device-width, initial-scale=1';
 
+                notification.appendChild(notificationLogo);
+                notification.appendChild(notificationText);
                 wrapper.appendChild(iframe);
                 document.body.appendChild(wrapper);
+                document.body.appendChild(notification);
                 document.head.appendChild(styleElem);
                 this.portisViewportMetaTag = viewportMetaTag;
                 this.dappViewportMetaTag = this.getDappViewportMetaTag();
 
-                resolve({ wrapper, iframe });
+                resolve({ wrapper, iframe, notification });
             }
 
             if (['loaded', 'interactive', 'complete'].indexOf(document.readyState) > -1) {
@@ -203,6 +214,26 @@ export class PortisProvider {
             if (isMobile()) {
                 document.body.style.overflow = 'inherit';
                 this.setDappViewport();
+            }
+        });
+    }
+
+    private showNotification(msg: string) {
+        this.elements.then(elements => {
+            const span = elements.notification.querySelector('span');
+            if (span) {
+                span.innerText = msg;
+                elements.notification.style.display = 'flex';
+            }
+        });
+    }
+
+    private hideNotification() {
+        this.elements.then(elements => {
+            const span = elements.notification.querySelector('span');
+            if (span) {
+                span.innerText = '';
+                elements.notification.style.display = 'none';
             }
         });
     }
@@ -301,6 +332,16 @@ export class PortisProvider {
 
                     case postMessages.PT_HIDE_IFRAME: {
                         this.hideIframe();
+                        break;
+                    }
+
+                    case postMessages.PT_SHOW_NOTIFICATION: {
+                        this.showNotification(evt.data.response.message);
+                        break;
+                    }
+
+                    case postMessages.PT_HIDE_NOTIFICATION: {
+                        this.hideNotification();
                         break;
                     }
 
