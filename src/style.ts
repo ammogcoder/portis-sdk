@@ -52,7 +52,7 @@ export const css = `
     animation: portis-notification-entrance 250ms ease-in-out forwards;
     opacity: 0;
     font-family: BlinkMacSystemFont,-apple-system,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
-    justify-content: flex-start;
+    justify-content: space-between;
     align-items: center;
     padding: 0 10px;
     background-color: white;
@@ -72,7 +72,7 @@ export const css = `
     animation: portis-notification-entrance 250ms ease-in-out forwards;
     opacity: 0;
     font-family: BlinkMacSystemFont,-apple-system,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
-    justify-content: flex-start;
+    justify-content: space-between;
     align-items: center;
     padding: 0 10px;
     background-color: white;
@@ -81,6 +81,15 @@ export const css = `
 .portis-notifiction-logo {
     width: 25px;
     margin-right: 10px;
+}
+
+.portis-notification-details {
+    display: flex;
+    align-items: center;
+}
+
+.portis-notification-button {
+    cursor: pointer;
 }
 
 @keyframes portis-entrance {

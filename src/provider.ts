@@ -2,7 +2,7 @@ import { Payload, Network, ScopeType } from "./types";
 import { isMobile, isLocalhost, randomId } from "./utils";
 import { css } from './style';
 
-const sdkVersion = '1.3.0';
+const sdkVersion = '1.3.1';
 const postMessages = {
     PT_RESPONSE: 'PT_RESPONSE',
     PT_HANDLE_REQUEST: 'PT_HANDLE_REQUEST',
@@ -20,6 +20,7 @@ const portisPayloadMethods = {
     SET_DEFAULT_EMAIL: 'SET_DEFAULT_EMAIL',
     SHOW_PORTIS: 'SHOW_PORTIS',
     CHANGE_NETWORK: 'CHANGE_NETWORK',
+    SHOW_TX_DETAILS: 'SHOW_TX_DETAILS',
 };
 
 export class PortisProvider {
@@ -163,11 +164,14 @@ export class PortisProvider {
                 const styleElem = document.createElement('style');
                 const viewportMetaTag = document.createElement('meta');
                 const notification = document.createElement('div');
+                const notificationDetails = document.createElement('div');
                 const notificationLogo = document.createElement('img');
                 const notificationText = document.createElement('span');
+                const showDetailsBtn = document.createElement('a');
 
                 wrapper.className = mobile ? 'portis-mobile-wrapper' : 'portis-wrapper';
                 iframe.className = mobile ? 'portis-mobile-iframe' : 'portis-iframe';
+                notificationDetails.className = 'portis-notification-details';
                 notification.className = mobile ? 'portis-mobile-notification' : 'portis-notification';
                 notificationLogo.src = 'https://assets.portis.io/portis-logo/logo_64_64.png';
                 notificationLogo.className = 'portis-notifiction-logo';
@@ -175,9 +179,16 @@ export class PortisProvider {
                 styleElem.innerHTML = css;
                 viewportMetaTag.name = 'viewport';
                 viewportMetaTag.content = 'width=device-width, initial-scale=1';
+                showDetailsBtn.innerHTML = 'Details';
+                showDetailsBtn.onclick = () => {
+                    this.sendGenericPayload(portisPayloadMethods.SHOW_TX_DETAILS);
+                };
+                showDetailsBtn.className = 'portis-notification-button';
 
-                notification.appendChild(notificationLogo);
-                notification.appendChild(notificationText);
+                notificationDetails.appendChild(notificationLogo);
+                notificationDetails.appendChild(notificationText);
+                notification.appendChild(notificationDetails);
+                notification.appendChild(showDetailsBtn);
                 wrapper.appendChild(iframe);
                 document.body.appendChild(wrapper);
                 document.body.appendChild(notification);
@@ -218,8 +229,13 @@ export class PortisProvider {
         });
     }
 
-    private showNotification(msg: string) {
+    private showNotification(msg: string, showDetailsButton?: boolean) {
         this.elements.then(elements => {
+            const button = elements.notification.querySelector('a');
+            if (button) {
+                button.style.display = showDetailsButton ? 'initial' : 'none';
+            }
+
             const span = elements.notification.querySelector('span');
             if (span) {
                 span.innerText = msg;
@@ -336,7 +352,7 @@ export class PortisProvider {
                     }
 
                     case postMessages.PT_SHOW_NOTIFICATION: {
-                        this.showNotification(evt.data.response.message);
+                        this.showNotification(evt.data.response.message, evt.data.response.showDetailsButton);
                         break;
                     }
 

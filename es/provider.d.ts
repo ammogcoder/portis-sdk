@@ -54,7 +54,7 @@ export declare class PortisProvider {
     private createIframe();
     private showIframe();
     private hideIframe();
-    private showNotification(msg);
+    private showNotification(msg, showDetailsButton?);
     private hideNotification();
     private getDappViewportMetaTag();
     private setPortisViewport();

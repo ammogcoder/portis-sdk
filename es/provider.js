@@ -1,6 +1,6 @@
 import { isMobile, isLocalhost, randomId } from "./utils";
 import { css } from './style';
-var sdkVersion = '1.3.0';
+var sdkVersion = '1.3.1';
 var postMessages = {
     PT_RESPONSE: 'PT_RESPONSE',
     PT_HANDLE_REQUEST: 'PT_HANDLE_REQUEST',
@@ -18,6 +18,7 @@ var portisPayloadMethods = {
     SET_DEFAULT_EMAIL: 'SET_DEFAULT_EMAIL',
     SHOW_PORTIS: 'SHOW_PORTIS',
     CHANGE_NETWORK: 'CHANGE_NETWORK',
+    SHOW_TX_DETAILS: 'SHOW_TX_DETAILS',
 };
 var PortisProvider = /** @class */ (function () {
     function PortisProvider(opts) {
@@ -137,10 +138,13 @@ var PortisProvider = /** @class */ (function () {
                 var styleElem = document.createElement('style');
                 var viewportMetaTag = document.createElement('meta');
                 var notification = document.createElement('div');
+                var notificationDetails = document.createElement('div');
                 var notificationLogo = document.createElement('img');
                 var notificationText = document.createElement('span');
+                var showDetailsBtn = document.createElement('a');
                 wrapper.className = mobile ? 'portis-mobile-wrapper' : 'portis-wrapper';
                 iframe.className = mobile ? 'portis-mobile-iframe' : 'portis-iframe';
+                notificationDetails.className = 'portis-notification-details';
                 notification.className = mobile ? 'portis-mobile-notification' : 'portis-notification';
                 notificationLogo.src = 'https://assets.portis.io/portis-logo/logo_64_64.png';
                 notificationLogo.className = 'portis-notifiction-logo';
@@ -148,8 +152,15 @@ var PortisProvider = /** @class */ (function () {
                 styleElem.innerHTML = css;
                 viewportMetaTag.name = 'viewport';
                 viewportMetaTag.content = 'width=device-width, initial-scale=1';
-                notification.appendChild(notificationLogo);
-                notification.appendChild(notificationText);
+                showDetailsBtn.innerHTML = 'Details';
+                showDetailsBtn.onclick = function () {
+                    _this.sendGenericPayload(portisPayloadMethods.SHOW_TX_DETAILS);
+                };
+                showDetailsBtn.className = 'portis-notification-button';
+                notificationDetails.appendChild(notificationLogo);
+                notificationDetails.appendChild(notificationText);
+                notification.appendChild(notificationDetails);
+                notification.appendChild(showDetailsBtn);
                 wrapper.appendChild(iframe);
                 document.body.appendChild(wrapper);
                 document.body.appendChild(notification);
@@ -186,8 +197,12 @@ var PortisProvider = /** @class */ (function () {
             }
         });
     };
-    PortisProvider.prototype.showNotification = function (msg) {
+    PortisProvider.prototype.showNotification = function (msg, showDetailsButton) {
         this.elements.then(function (elements) {
+            var button = elements.notification.querySelector('a');
+            if (button) {
+                button.style.display = showDetailsButton ? 'initial' : 'none';
+            }
             var span = elements.notification.querySelector('span');
             if (span) {
                 span.innerText = msg;
@@ -284,7 +299,7 @@ var PortisProvider = /** @class */ (function () {
                         break;
                     }
                     case postMessages.PT_SHOW_NOTIFICATION: {
-                        _this.showNotification(evt.data.response.message);
+                        _this.showNotification(evt.data.response.message, evt.data.response.showDetailsButton);
                         break;
                     }
                     case postMessages.PT_HIDE_NOTIFICATION: {
