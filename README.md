@@ -320,20 +320,6 @@ The callback method will return an object containing two values:
 1. `purchaseId`: a unique indentifier which can be used to poll the purchase status, as documented in the [dashboard](https://app.portis.io/dashboard).
 
 
-
-<hr>
-
-## Account Creation
-
-Each new account is automatically loaded with $1 worth of Ether, free of charge. Our goal is to provide the best user experience to your users, so we want to make sure that the first time they sign a transaction goes as smooth as possible.
-
-To prevent people from abusing this mechanism, we require a phone number when creating an account (a PIN is sent via SMS to that number to complete registration).
-
-We realize that some users might feel uncomfortable about providing their phone number. Also, this requirement poses an issue when testing, where you may want to easily generate a lot of different accounts.
-
-Therefore, it is not mandatory to provide a phone number at the final step of registration. The new account simply won't be funded with the $1 worth of Ether.
-
-
 <hr>
 
 ## Browsers support
