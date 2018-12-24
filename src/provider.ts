@@ -2,7 +2,7 @@ import { Payload, Network, ScopeType } from "./types";
 import { isMobile, isLocalhost, randomId } from "./utils";
 import { css } from './style';
 
-const sdkVersion = '1.3.1';
+const sdkVersion = '1.3.2';
 const postMessages = {
     PT_RESPONSE: 'PT_RESPONSE',
     PT_HANDLE_REQUEST: 'PT_HANDLE_REQUEST',
@@ -21,6 +21,7 @@ const portisPayloadMethods = {
     SHOW_PORTIS: 'SHOW_PORTIS',
     CHANGE_NETWORK: 'CHANGE_NETWORK',
     SHOW_TX_DETAILS: 'SHOW_TX_DETAILS',
+    UPDATE_WIDGET_LOCATION: 'UPDATE_WIDGET_LOCATION',
 };
 
 export class PortisProvider {
@@ -210,7 +211,7 @@ export class PortisProvider {
     private showIframe() {
         this.elements.then(elements => {
             elements.wrapper.style.display = 'block';
-
+            this.sendGenericPayload(portisPayloadMethods.UPDATE_WIDGET_LOCATION, [elements.wrapper.getBoundingClientRect()]);
             if (isMobile()) {
                 document.body.style.overflow = 'hidden';
                 this.setPortisViewport();

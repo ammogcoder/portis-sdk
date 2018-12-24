@@ -1,6 +1,6 @@
 import { isMobile, isLocalhost, randomId } from "./utils";
 import { css } from './style';
-var sdkVersion = '1.3.1';
+var sdkVersion = '1.3.2';
 var postMessages = {
     PT_RESPONSE: 'PT_RESPONSE',
     PT_HANDLE_REQUEST: 'PT_HANDLE_REQUEST',
@@ -19,6 +19,7 @@ var portisPayloadMethods = {
     SHOW_PORTIS: 'SHOW_PORTIS',
     CHANGE_NETWORK: 'CHANGE_NETWORK',
     SHOW_TX_DETAILS: 'SHOW_TX_DETAILS',
+    UPDATE_WIDGET_LOCATION: 'UPDATE_WIDGET_LOCATION',
 };
 var PortisProvider = /** @class */ (function () {
     function PortisProvider(opts) {
@@ -181,6 +182,7 @@ var PortisProvider = /** @class */ (function () {
         var _this = this;
         this.elements.then(function (elements) {
             elements.wrapper.style.display = 'block';
+            _this.sendGenericPayload(portisPayloadMethods.UPDATE_WIDGET_LOCATION, [elements.wrapper.getBoundingClientRect()]);
             if (isMobile()) {
                 document.body.style.overflow = 'hidden';
                 _this.setPortisViewport();

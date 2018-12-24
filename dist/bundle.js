@@ -21,7 +21,7 @@ function randomId() {
 
 var css = "\n.portis-wrapper {\n    display: none;\n    position: fixed;\n    top: 10px;\n    right: 20px;\n    height: 525px;\n    width: 390px;\n    border-radius: 8px;\n    z-index: 2147483647;\n    box-shadow: rgba(0, 0, 0, 0.16) 0px 5px 40px;\n    animation: portis-entrance 250ms ease-in-out forwards;\n    opacity: 0;\n}\n\n.portis-iframe {\n    display: block;\n    width: 100%;\n    height: 100%;\n    border: none;\n    border-radius: 8px;\n}\n\n.portis-mobile-wrapper {\n    display: none;\n    position: fixed;\n    top: 0;\n    left: 0;\n    right: 0;\n    width: 100%;\n    height: 100%;\n    z-index: 2147483647;\n}\n\n.portis-mobile-iframe {\n    display: block;\n    width: 100%;\n    height: 100%;\n    border: none;\n}\n\n.portis-notification {\n    display: none;\n    position: fixed;\n    bottom: 10px;\n    right: 20px;\n    height: 50px;\n    width: 390px;\n    border-radius: 8px;\n    z-index: 2147483647;\n    box-shadow: rgba(0, 0, 0, 0.16) 0px 5px 40px;\n    animation: portis-notification-entrance 250ms ease-in-out forwards;\n    opacity: 0;\n    font-family: BlinkMacSystemFont,-apple-system,\"Segoe UI\",Roboto,Oxygen,Ubuntu,Cantarell,\"Fira Sans\",\"Droid Sans\",\"Helvetica Neue\",Helvetica,Arial,sans-serif;\n    justify-content: space-between;\n    align-items: center;\n    padding: 0 10px;\n    background-color: white;\n}\n\n.portis-mobile-notification {\n    display: none;\n    position: fixed;\n    bottom: 10px;\n    right: 0;\n    left: 0;\n    height: 50px;\n    width: calc(100% - 20px);\n    margin: 0 10px;\n    border-radius: 8px;\n    z-index: 2147483647;\n    animation: portis-notification-entrance 250ms ease-in-out forwards;\n    opacity: 0;\n    font-family: BlinkMacSystemFont,-apple-system,\"Segoe UI\",Roboto,Oxygen,Ubuntu,Cantarell,\"Fira Sans\",\"Droid Sans\",\"Helvetica Neue\",Helvetica,Arial,sans-serif;\n    justify-content: space-between;\n    align-items: center;\n    padding: 0 10px;\n    background-color: white;\n}\n\n.portis-notifiction-logo {\n    width: 25px;\n    margin-right: 10px;\n}\n\n.portis-notification-details {\n    display: flex;\n    align-items: center;\n}\n\n.portis-notification-button {\n    cursor: pointer;\n}\n\n@keyframes portis-entrance {\n    100% { opacity: 1; top: 20px; }\n}\n\n@keyframes portis-notification-entrance {\n    100% { opacity: 1; bottom: 20px; }\n}\n";
 
-var sdkVersion = '1.3.1';
+var sdkVersion = '1.3.2';
 var postMessages = {
     PT_RESPONSE: 'PT_RESPONSE',
     PT_HANDLE_REQUEST: 'PT_HANDLE_REQUEST',
@@ -40,6 +40,7 @@ var portisPayloadMethods = {
     SHOW_PORTIS: 'SHOW_PORTIS',
     CHANGE_NETWORK: 'CHANGE_NETWORK',
     SHOW_TX_DETAILS: 'SHOW_TX_DETAILS',
+    UPDATE_WIDGET_LOCATION: 'UPDATE_WIDGET_LOCATION',
 };
 var PortisProvider = /** @class */ (function () {
     function PortisProvider(opts) {
@@ -202,6 +203,7 @@ var PortisProvider = /** @class */ (function () {
         var _this = this;
         this.elements.then(function (elements) {
             elements.wrapper.style.display = 'block';
+            _this.sendGenericPayload(portisPayloadMethods.UPDATE_WIDGET_LOCATION, [elements.wrapper.getBoundingClientRect()]);
             if (isMobile()) {
                 document.body.style.overflow = 'hidden';
                 _this.setPortisViewport();
