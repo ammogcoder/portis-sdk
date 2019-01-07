@@ -13,7 +13,7 @@ export function isLocalhost() {
 }
 
 export function randomId() {
-    const upperBound = Math.pow(10, 7);
-    const lowerBound = 1;
-    return Math.floor(Math.random() * (upperBound - lowerBound) + lowerBound);
+    const datePart = new Date().getTime()*Math.pow(10, 3);
+    const extraPart = Math.floor(Math.random()*Math.pow(10, 3));
+    return datePart + extraPart;
 }

@@ -2,7 +2,7 @@ import { Payload, Network, ScopeType } from "./types";
 import { isMobile, isLocalhost, randomId } from "./utils";
 import { css } from './style';
 
-const sdkVersion = '1.3.2';
+const sdkVersion = '1.3.3';
 const postMessages = {
     PT_RESPONSE: 'PT_RESPONSE',
     PT_HANDLE_REQUEST: 'PT_HANDLE_REQUEST',
@@ -279,6 +279,12 @@ export class PortisProvider {
     }
 
     private enqueue(payload: Payload, cb) {
+        if (Array.isArray(payload)) {
+            payload = payload.map(p => p.id = randomId()) as any;
+        } else {
+            payload.id = randomId();
+        }
+
         this.queue.push({ payload, cb });
 
         if (this.iframeReady) {

@@ -1,6 +1,6 @@
 import { isMobile, isLocalhost, randomId } from "./utils";
 import { css } from './style';
-var sdkVersion = '1.3.2';
+var sdkVersion = '1.3.3';
 var postMessages = {
     PT_RESPONSE: 'PT_RESPONSE',
     PT_HANDLE_REQUEST: 'PT_HANDLE_REQUEST',
@@ -240,6 +240,12 @@ var PortisProvider = /** @class */ (function () {
         }
     };
     PortisProvider.prototype.enqueue = function (payload, cb) {
+        if (Array.isArray(payload)) {
+            payload = payload.map(function (p) { return p.id = randomId(); });
+        }
+        else {
+            payload.id = randomId();
+        }
         this.queue.push({ payload: payload, cb: cb });
         if (this.iframeReady) {
             this.dequeue();
