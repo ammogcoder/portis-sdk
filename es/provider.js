@@ -1,6 +1,6 @@
 import { isMobile, isLocalhost, randomId } from "./utils";
 import { css } from './style';
-var sdkVersion = '1.3.3';
+var sdkVersion = '1.3.4';
 var postMessages = {
     PT_RESPONSE: 'PT_RESPONSE',
     PT_HANDLE_REQUEST: 'PT_HANDLE_REQUEST',
@@ -241,7 +241,10 @@ var PortisProvider = /** @class */ (function () {
     };
     PortisProvider.prototype.enqueue = function (payload, cb) {
         if (Array.isArray(payload)) {
-            payload = payload.map(function (p) { return p.id = randomId(); });
+            payload = payload.map(function (p) {
+                p.id = randomId();
+                return p;
+            });
         }
         else {
             payload.id = randomId();
