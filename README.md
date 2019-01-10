@@ -128,7 +128,7 @@ web3.currentProvider.isPortis
 
 ## Usage
 
-[Here](https://plnkr.co/edit/gHp1TrNn9GsvtYuQ3Gqn?p=preview) is an example. (Hit "Run" if you don't see anything, and make sure you either disable MetaMask or use private mode on your browser)
+[Here](https://plnkr.co/edit/vxaWCUlo8wSL91pvKUUB?p=preview) is an example. (Hit "Run" if you don't see anything, and make sure you either disable MetaMask or use private mode on your browser)
 
 ### Getting the user's address
 If you need the user's address, perhaps to authenticate them into your website, you would use the regular `web3.eth.getAccounts` method. Nothing special here:
